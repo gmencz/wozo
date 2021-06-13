@@ -1,0 +1,37 @@
+{
+  "private": true,
+  "name": "www",
+  "scripts": {
+    "postinstall": "npm run build",
+    "prebuild": "rm -rf build public/build",
+    "build": "remix build",
+    "dev": "remix run",
+    "start": "remix-serve build",
+    "css:watch": "postcss styles --base styles --dir app/styles -w",
+    "css:build": "postcss styles --base styles --dir app/styles --env production"
+  },
+  "dependencies": {
+    "@remix-run/node": "^0.17.5",
+    "@remix-run/react": "^0.17.5",
+    "@remix-run/serve": "^0.17.5",
+    "dotenv": "^10.0.0",
+    "react": "^17.0.1",
+    "react-dom": "^17.0.1",
+    "react-router-dom": "^6.0.0-beta.0",
+    "remix": "^0.17.5"
+  },
+  "devDependencies": {
+    "@remix-run/dev": "^0.17.5",
+    "@types/react": "^17.0.4",
+    "@types/react-dom": "^17.0.4",
+    "autoprefixer": "^10.2.6",
+    "postcss": "^8.3.2",
+    "postcss-cli": "^8.3.1",
+    "tailwindcss": "^2.1.4",
+    "typescript": "^4.1.2"
+  },
+  "engines": {
+    "node": ">=14"
+  },
+  "sideEffects": false
+}
