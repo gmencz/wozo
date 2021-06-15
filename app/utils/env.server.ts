@@ -1,8 +1,5 @@
-import { config } from "dotenv";
-config();
+import "dotenv/config";
 
 export function getEnv() {
-  return {
-    NODE_ENV: process.env.NODE_ENV,
-  };
+  return {};
 }

@@ -7,8 +7,9 @@ import {
   redirect,
   useRouteData,
 } from "remix";
-import { getMetaTags } from "../utils/seo";
-import { commitSession, getSession } from "../utils/sessions";
+import { sendMagicLink, createMagicLink } from "../../utils/auth.server";
+import { getMetaTags } from "../../utils/seo";
+import { commitSession, getSession } from "../../utils/sessions";
 
 type RouteData = {
   authError?: string;
@@ -19,7 +20,7 @@ export let meta: MetaFunction = () => {
     description:
       "Empowering people to communicate no matter what language they speak by removing language barriers with AI.",
     pathname: "/",
-    title: "Wozo - Login",
+    title: "Wozo - Log in or Sign up",
   });
 };
 
@@ -43,7 +44,24 @@ export let action: ActionFunction = async ({ request }) => {
 
   if (!email?.includes("@")) {
     session.flash("authError", "That's not a valid email!");
+
+    return redirect("/auth", {
+      headers: {
+        "Set-Cookie": await commitSession(session),
+      },
+    });
   }
+
+  let magicLink = await createMagicLink(email);
+
+  // TODO with prisma
+  let userExists = true;
+
+  await sendMagicLink({
+    email,
+    magicLink,
+    userExists,
+  });
 
   return redirect("/auth", {
     headers: {
