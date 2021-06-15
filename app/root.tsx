@@ -1,7 +1,8 @@
-import { LinksFunction, LoaderFunction, useRouteData } from "remix";
-import { Meta, Links, Scripts, LiveReload, json } from "remix";
+import type { LinksFunction, LoaderFunction } from "remix";
+import type { PrismaClient } from ".prisma/client";
+import { Meta, Links, Scripts, LiveReload, json, useRouteData } from "remix";
 import { Outlet } from "react-router-dom";
-import { getEnv } from "./utils/env.server";
+import { getEnv } from "./utils/env";
 import stylesUrl from "./styles/app.css";
 
 type ENV = ReturnType<typeof getEnv>;
@@ -16,6 +17,7 @@ declare global {
   namespace NodeJS {
     interface Global {
       ENV: ENV;
+      prisma?: PrismaClient;
     }
   }
 

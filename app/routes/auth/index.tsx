@@ -7,7 +7,8 @@ import {
   redirect,
   useRouteData,
 } from "remix";
-import { sendMagicLink, createMagicLink } from "../../utils/auth.server";
+import { sendMagicLink, createMagicLink } from "../../utils/auth";
+import { prisma } from "../../utils/prisma";
 import { getMetaTags } from "../../utils/seo";
 import { commitSession, getSession } from "../../utils/sessions";
 
@@ -26,6 +27,12 @@ export let meta: MetaFunction = () => {
 
 export let loader: LoaderFunction = async ({ request }) => {
   let session = await getSession(request.headers.get("Cookie"));
+
+  let isLoggedIn = session.has("user");
+
+  if (isLoggedIn) {
+    return redirect("/app");
+  }
 
   let data = { authError: session.get("authError") };
 
@@ -54,13 +61,21 @@ export let action: ActionFunction = async ({ request }) => {
 
   let magicLink = await createMagicLink(email);
 
-  // TODO with prisma
-  let userExists = true;
+  let user = await prisma.user.findUnique({
+    where: {
+      email,
+    },
+    // We don't really care about the user itself so to avoid fetching unnecessary
+    // fields, we select only the id.
+    select: {
+      id: true,
+    },
+  });
 
   await sendMagicLink({
     email,
     magicLink,
-    userExists,
+    userExists: !!user,
   });
 
   return redirect("/auth", {
