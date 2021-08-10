@@ -1,11 +1,4 @@
-import "dotenv/config";
 import jwt from "jsonwebtoken";
-import unified from "unified";
-import markdown from "remark-parse";
-import remark2rehype from "remark-rehype";
-import doc from "rehype-document";
-import format from "rehype-format";
-import rehypStringify from "rehype-stringify";
 
 type MailgunMessage = {
   to: string;
@@ -69,34 +62,14 @@ export async function createMagicLink(email: string) {
   return verifyMagicLinkBaseUrl + `?token=${token}`;
 }
 
-async function markdownToHtml(markdownString: string) {
-  let { contents } = await unified()
-    .use(markdown)
-    .use(remark2rehype)
-    .use(doc)
-    .use(format)
-    .use(rehypStringify)
-    .process(markdownString);
-
-  return contents.toString();
-}
-
-async function sendEmail({ to, from, subject, text, html }: MailgunMessage) {
+async function sendEmail({ to, from, subject, text }: MailgunMessage) {
   let auth = `${Buffer.from(`api:${mailgunApiKey}`).toString("base64")}`;
-
-  // if they didn't specify it and it's not
-  if (html === undefined) {
-    html = await markdownToHtml(text);
-  } else if (html === null) {
-    html = text;
-  }
 
   let body = new URLSearchParams({
     to,
     from,
     subject,
     text,
-    html,
   });
 
   await fetch(`https://api.mailgun.net/v3/${mailgunDomain}/messages`, {
@@ -139,7 +112,6 @@ P.S. If you did not sign up for an account on Wozo you can ignore this email.
     to: email,
     subject: `Here's your Magic ✨ link for Wozo`,
     text: body,
-    html: await markdownToHtml(body),
   };
 
   await sendEmail(message);
