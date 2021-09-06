@@ -102,7 +102,7 @@ Clicking the link above will create a *new* account on Wozo with the email ${ema
 
 Thanks!
 
-&ndash; The Wozo Team
+- The Wozo Team
 
 P.S. If you did not sign up for an account on Wozo you can ignore this email.
   `.trim();
