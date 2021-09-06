@@ -1,4 +1,0 @@
-model Account {
-  id    String @id
-  email String
-}
