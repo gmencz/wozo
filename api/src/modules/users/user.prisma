@@ -1,0 +1,10 @@
+model User {
+  id        String  @id
+  account   Account @relation(fields: [accountId], references: [id])
+  accountId String
+}
+
+model Account {
+  id   String @id
+  user User?
+}
