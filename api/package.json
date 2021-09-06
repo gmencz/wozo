@@ -1,0 +1,14 @@
+{
+  "scripts": {
+    "dev": "tsnd --respawn --transpile-only src/index.ts",
+    "build": "rimraf ./build && tsc",
+    "start": "npm run build && node build/index.js"
+  },
+  "devDependencies": {
+    "@types/node": "^16.7.6",
+    "rimraf": "^3.0.2",
+    "ts-node-dev": "^1.1.8",
+    "typescript": "^4.4.2"
+  },
+  "dependencies": {}
+}
