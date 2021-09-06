@@ -1,6 +1,6 @@
 import { builder } from "../../builder";
 
-const UserType = builder.simpleObject("User", {
+const AccountType = builder.simpleObject("Account", {
   fields: (t) => ({
     id: t.string({ nullable: false }),
   }),
@@ -9,7 +9,7 @@ const UserType = builder.simpleObject("User", {
 builder.queryType({
   fields: (t) => ({
     me: t.field({
-      type: UserType,
+      type: AccountType,
       nullable: true,
       resolve: (_parent, _args) => {
         return null;

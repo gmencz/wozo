@@ -1,5 +1,5 @@
 import { builder } from "./builder";
-import "./modules/users/resolvers";
+import "./modules/accounts/resolvers";
 
 const schema = builder.toSchema({});
 

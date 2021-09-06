@@ -11,11 +11,4 @@ generator client {
 model Account {
   id    String @id
   email String
-  user  User?  @relation(name: "AccountToUser")
-}
-
-model User {
-  id        String  @id
-  account   Account @relation(name: "AccountToUser", fields: [accountId], references: [id])
-  accountId String
 }

@@ -1,6 +1,6 @@
 import jwt from "jsonwebtoken";
 
-interface User {
+interface TokenAccount {
   id: string;
 }
 
@@ -15,8 +15,8 @@ function extractTokenFromHeader(authorizationHeader?: string) {
   return token;
 }
 
-function getUserFromToken(token: string) {
-  return jwt.verify(token, process.env.AUTH_SECRET_KEY!) as User;
+function getAccountFromToken(token: string) {
+  return jwt.verify(token, process.env.AUTH_SECRET_KEY!) as TokenAccount;
 }
 
-export { User, extractTokenFromHeader, getUserFromToken };
+export { TokenAccount, extractTokenFromHeader, getAccountFromToken };

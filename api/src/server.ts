@@ -1,20 +1,23 @@
 import { ApolloServer } from "apollo-server";
-import { getUserFromToken, extractTokenFromHeader } from "./auth";
 import { schema } from "./schema";
+import {
+  getAccountFromToken,
+  extractTokenFromHeader,
+} from "./modules/accounts/auth";
 
 const server = new ApolloServer({
   schema,
   context: async ({ req }) => {
     const token = extractTokenFromHeader(req.headers.authorization);
     if (!token) {
-      return { user: null };
+      return { account: null };
     }
 
     try {
-      const user = getUserFromToken(token);
-      return { user };
+      const account = getAccountFromToken(token);
+      return { account };
     } catch (error) {
-      return { user: null };
+      return { account: null };
     }
   },
 });
