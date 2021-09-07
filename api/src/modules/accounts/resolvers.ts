@@ -91,7 +91,7 @@ builder.mutationType({
           },
         });
 
-        if (!account) {
+        if (!account || !account.password_hash) {
           throw new ApolloError("Invalid email or password");
         }
 

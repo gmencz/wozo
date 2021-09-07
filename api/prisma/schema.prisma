@@ -11,9 +11,9 @@ generator client {
 }
 
 model Account {
-  id            String @id
-  email         String @unique
-  password_hash String
+  id            String  @id
+  email         String  @unique
+  password_hash String?
 
   @@map("accounts")
 }
