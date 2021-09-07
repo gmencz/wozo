@@ -1,6 +1,7 @@
 import argon2 from "argon2";
 import { ApolloError } from "apollo-server-errors";
 import { PrismaClientKnownRequestError } from "@prisma/client/runtime";
+import { PrismaSelect } from "@paljs/plugins";
 import { nanoid } from "nanoid";
 import { prisma } from "~/db";
 import { builder } from "~/builder";
@@ -32,14 +33,15 @@ builder.queryType({
       authScopes: {
         loggedIn: true,
       },
-      resolve: async (_parent, _args, { account }) => {
+      resolve: async (_parent, _args, { account }, info) => {
+        const { select } = new PrismaSelect(info).value;
         const accountDetails = await prisma.account.findUnique({
           where: {
             id: account?.id,
           },
           select: {
-            id: true,
-            email: true,
+            id: !!select.id,
+            email: !!select.email,
           },
         });
 
@@ -79,14 +81,15 @@ builder.mutationType({
           },
         }),
       },
-      resolve: async (_parent, { email, password }) => {
+      resolve: async (_parent, { email, password }, _context, info) => {
+        const { select } = new PrismaSelect(info).valueOf("account");
         const account = await prisma.account.findUnique({
           where: {
             email,
           },
           select: {
-            id: true,
-            email: true,
+            id: !!select.id,
+            email: !!select.email,
             password_hash: true,
           },
         });
@@ -128,8 +131,9 @@ builder.mutationType({
           },
         }),
       },
-      resolve: async (_parent, { email, password }) => {
+      resolve: async (_parent, { email, password }, _context, info) => {
         const passwordHash = await argon2.hash(password);
+        const { select } = new PrismaSelect(info).valueOf("account");
 
         let account;
         try {
@@ -140,8 +144,8 @@ builder.mutationType({
               password_hash: passwordHash,
             },
             select: {
-              id: true,
-              email: true,
+              id: !!select.id,
+              email: !!select.email,
             },
           });
         } catch (error) {
