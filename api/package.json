@@ -2,11 +2,13 @@
   "scripts": {
     "dev": "dotenv -- tsnd -r tsconfig-paths/register --respawn --transpile-only src/server.ts",
     "build": "rimraf ./build && tsc",
-    "start": "npm run build && node build/server.js"
+    "start": "npm run build && node build/server.js",
+    "db:up": "concurrently -n dev,shadow \"pscale connect wozo dev --port 3309\" \"pscale connect wozo shadow --port 3310\""
   },
   "devDependencies": {
     "@types/jsonwebtoken": "^8.5.5",
     "@types/node": "^16.7.6",
+    "concurrently": "^6.2.1",
     "dotenv-cli": "^4.0.0",
     "prisma": "^2.30.3",
     "rimraf": "^3.0.2",

@@ -4,7 +4,7 @@ import { PrismaClientKnownRequestError } from "@prisma/client/runtime";
 import { nanoid } from "nanoid";
 import { prisma } from "~/db";
 import { builder } from "~/builder";
-import { createToken } from "./auth";
+import { createToken } from "~/auth";
 import { emailSchema, passwordSchema } from "./validation";
 
 const AccountType = builder.simpleObject("Account", {
@@ -29,8 +29,28 @@ builder.queryType({
     me: t.field({
       type: AccountType,
       nullable: true,
-      resolve: (_parent, _args) => {
-        return null;
+      authScopes: {
+        loggedIn: true,
+      },
+      resolve: async (_parent, _args, { account }) => {
+        const accountDetails = await prisma.account.findUnique({
+          where: {
+            id: account?.id,
+          },
+          select: {
+            id: true,
+            email: true,
+          },
+        });
+
+        if (!accountDetails) {
+          return null;
+        }
+
+        return {
+          id: accountDetails.id,
+          email: accountDetails.email,
+        };
       },
     }),
   }),

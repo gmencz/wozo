@@ -4,6 +4,8 @@ interface TokenAccount {
   id: string;
 }
 
+type TokenPayload = Record<string, unknown> & TokenAccount;
+
 function extractTokenFromHeader(authorizationHeader?: string) {
   if (!authorizationHeader) {
     return null;
@@ -15,8 +17,15 @@ function extractTokenFromHeader(authorizationHeader?: string) {
   return token;
 }
 
-function getAccountFromToken(token: string) {
-  return jwt.verify(token, process.env.AUTH_SECRET_KEY!) as TokenAccount;
+function getAccountFromToken(token: string): TokenAccount {
+  const tokenPayload = jwt.verify(
+    token,
+    process.env.AUTH_SECRET_KEY!
+  ) as TokenPayload;
+
+  return {
+    id: tokenPayload.id,
+  };
 }
 
 function createToken(account: { id: string; email: string }) {
